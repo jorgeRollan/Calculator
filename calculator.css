@@ -1,0 +1,24 @@
+#divMain{
+    display: flex;
+}
+
+#divButtons{
+    display: flex;
+}
+#divSymbols{
+    display: flex;
+    flex-direction: column;
+}
+#divMain{
+    display: flex;
+    flex-direction: column;
+}
+#textDisplay{
+    background: grey;
+    border: solid gray;
+}
+
+button{
+    margin: 5px;
+    min-width: 50px;
+    min-height: 50px;}
