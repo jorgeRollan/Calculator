@@ -50,11 +50,18 @@ divButtons.appendChild(divButton);
 
 //boton de la , ""
 const divButton2 = document.createElement("button");
-divButton2.textContent = ",";
+divButton2.textContent = ".";
 divButton2.style.gridArea = 4, 5, 2, 3;
 divButton2.style.margin = "5px"
 divButton2.addEventListener("click", function () {
     displayButton(divButton2);
+    //si se pulsa antes de un simbolo de operacion
+    if (!secondOperand) {
+        pulsedNumbers = pulsedNumbers + divButton2.textContent;
+    }
+    else {
+        pulsedNumbersSecond = pulsedNumbersSecond + divButton2.textContent;
+    }
 })
 divButtons.appendChild(divButton2);
 
@@ -79,7 +86,7 @@ divButton4.style.gridArea = 5, 6, 1, 4;
 divButton4.style.margin = "5px"
 divButton4.addEventListener("click", function () {
     let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-    displayResult(operate(operation));
+    displayResult(operate(operation).toFixed(6));
     cleanParameters();
     postResult=true;
 })
@@ -157,9 +164,9 @@ function cleanParameters() {
 //objeto de la operacion
 function createOperation(op1, operator, op2) {
     return {
-        firstOp: Number(op1),
+        firstOp: parseFloat(op1),
         operator: operator,
-        secondOp: Number(op2),
+        secondOp: parseFloat(op2),
     }
 }
 
