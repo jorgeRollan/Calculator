@@ -7,7 +7,8 @@ const divButtons = document.getElementById("divNumbers");
 divButtons.style.display = "grid";
 let number = 0
 let secondOperand = false;
-let postResult=false;
+let postResult = false;
+let multipleOp = false;
 let pulsedNumbers = "";
 let pulsedNumbersSecond = "";
 let operator = "";
@@ -19,9 +20,9 @@ for (let a = 3; a > 0; a--) {
         divButton.style.gridArea = a, a + 1, b, b + 1;
         divButton.style.margin = "5px"
         divButton.addEventListener("click", function () {
-            if(postResult){
+            if (postResult) {
                 displayClean();
-                postResult=false;
+                postResult = false;
             }
             displayButton(divButton);
             //si se pulsa antes de un simbolo de operacion
@@ -43,7 +44,19 @@ divButton.textContent = 0;
 divButton.style.gridArea = 4, 5, 1, 2;
 divButton.style.margin = "5px"
 divButton.addEventListener("click", function () {
+    if (postResult) {
+        displayClean();
+        postResult = false;
+    }
     displayButton(divButton);
+    //si se pulsa antes de un simbolo de operacion
+    if (!secondOperand) {
+        pulsedNumbers = pulsedNumbers + divButton.textContent;
+    }
+    else {
+        pulsedNumbersSecond = pulsedNumbersSecond + divButton.textContent;
+    }
+
 })
 divButtons.appendChild(divButton);
 
@@ -86,41 +99,72 @@ divButton4.style.gridArea = 5, 6, 1, 4;
 divButton4.style.margin = "5px"
 divButton4.addEventListener("click", function () {
     let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-    displayResult(operate(operation).toFixed(6));
+    let result = operate(operation);
+    if(result){
+        displayResult(result);
+    }
     cleanParameters();
-    postResult=true;
+    postResult = true;
 })
 document.getElementById("divMain").appendChild(divButton4);
 
 //listeners de botones del html
 document.getElementById("plusButton").addEventListener("click", function () {
     displayButton(document.getElementById("plusButton"));
-    if (operator == "") {
+    if (!secondOperand) {
         operator = "+";
+        secondOperand = true;
+    }
+    else {
+        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
+        cleanParameters();
+        pulsedNumbers = operate(operation);
+        operator = operator = "+";
         secondOperand = true;
     }
 })
 
 document.getElementById("subButton").addEventListener("click", function () {
     displayButton(document.getElementById("subButton"));
-    if (operator == "") {
+    if (!secondOperand) {
         operator = "-";
+        secondOperand = true;
+    }
+    else {
+        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
+        cleanParameters();
+        pulsedNumbers = operate(operation);
+        operator = operator = "-";
         secondOperand = true;
     }
 })
 
 document.getElementById("mulButton").addEventListener("click", function () {
     displayButton(document.getElementById("mulButton"));
-    if (operator == "") {
+    if (!secondOperand) {
         operator = "*";
+        secondOperand = true;
+    }
+    else {
+        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
+        cleanParameters();
+        pulsedNumbers = operate(operation);
+        operator = operator = "*";
         secondOperand = true;
     }
 })
 
 document.getElementById("divButton").addEventListener("click", function () {
     displayButton(document.getElementById("divButton"));
-    if (operator == "") {
+    if (!secondOperand) {
         operator = "/";
+        secondOperand = true;
+    }
+    else {
+        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
+        cleanParameters();
+        pulsedNumbers = operate(operation);
+        operator = operator = "/";
         secondOperand = true;
     }
 })
@@ -209,5 +253,12 @@ function mul(operation) {
 
 //funcion division
 function div(operation) {
-    return operation.firstOp / operation.secondOp;
+    if (operation.secondOp == 0) {
+        displayResult(div0);
+    }
+    else
+        return operation.firstOp / operation.secondOp;
 }
+
+//Strings de errores
+let div0 = "error division entre 0";
