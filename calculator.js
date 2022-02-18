@@ -61,26 +61,26 @@ divButton.addEventListener("click", function () {
 divButtons.appendChild(divButton);
 
 
+
 //boton de la , ""
 const divButton2 = document.createElement("button");
 divButton2.textContent = ".";
 divButton2.style.gridArea = 4, 5, 2, 3;
-divButton2.style.margin = "5px"
-let comaCounterFirst = 0;
-let comaCounterSecond = 0;
-divButton2.addEventListener("click", function () {
+divButton2.style.margin = "5px";
+function clickFun(event) {
     displayButton(divButton2);
-    //si se pulsa antes de un simbolo de operacion
     if (!secondOperand) {
-        comaCounterFirst = comaCounterFirst + 1;
         pulsedNumbers = pulsedNumbers + divButton2.textContent;
+        enableDotButton(false);
     }
     else {
-        comaCounterSecond = comaCounterSecond + 1;
         pulsedNumbersSecond = pulsedNumbersSecond + divButton2.textContent;
+        enableDotButton(false);
     }
-})
+}
+divButton2.addEventListener("click", clickFun, true);
 divButtons.appendChild(divButton2);
+
 
 
 
@@ -96,23 +96,20 @@ divButton3.addEventListener("click", function () {
 divButtons.appendChild(divButton3);
 
 
+
 //boton de igual quee lo anado fuera del div grid para que ocupe todo el ancho
 const divButton4 = document.createElement("button");
 divButton4.textContent = "=";
 divButton4.style.gridArea = 5, 6, 1, 4;
 divButton4.style.margin = "5px"
 divButton4.addEventListener("click", function () {
-    if (comaCounterFirst > 1 || comaCounterSecond > 1) {
-        displayResult(moreThanOneDot);
-    }
-    else {
-        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-        let result = operate(operation);
+    let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
+    let result = operate(operation);
 
-        if (result) {
-            displayResult(Math.round((result + Number.EPSILON) * 100) / 100);
-        }
+    if (result) {
+        displayResult(Math.round((result + Number.EPSILON) * 100) / 100);
     }
+
     cleanParameters();
     postResult = true;
 })
@@ -132,6 +129,7 @@ document.getElementById("plusButton").addEventListener("click", function () {
         operator = operator = "+";
         secondOperand = true;
     }
+    enableDotButton(true);
 })
 
 document.getElementById("subButton").addEventListener("click", function () {
@@ -147,6 +145,7 @@ document.getElementById("subButton").addEventListener("click", function () {
         operator = operator = "-";
         secondOperand = true;
     }
+    enableDotButton(true);
 })
 
 document.getElementById("mulButton").addEventListener("click", function () {
@@ -162,10 +161,12 @@ document.getElementById("mulButton").addEventListener("click", function () {
         operator = operator = "*";
         secondOperand = true;
     }
+    enableDotButton(true);
 })
 
 document.getElementById("divButton").addEventListener("click", function () {
     displayButton(document.getElementById("divButton"));
+    enableDotButton(true);
     if (!secondOperand) {
         operator = "/";
         secondOperand = true;
@@ -224,6 +225,16 @@ function createOperation(op1, operator, op2) {
     }
 }
 
+function enableDotButton(on) {
+    if (on) {
+        divButton2.addEventListener("click", clickFun, true)
+        divButtons.appendChild(divButton2);
+    }
+    else {
+        divButton2.removeEventListener("click", clickFun, true)
+    }
+}
+
 function operate(operation) {
     switch (operation.operator) {
         case ("+"): {
@@ -272,4 +283,4 @@ function div(operation) {
 
 //Strings de errores
 let div0 = "error division entre 0";
-let moreThanOneDot = "Mas de 1 . en operando"
+let moreThanOneDot = "Mas de 1 . en operando";
