@@ -66,13 +66,17 @@ const divButton2 = document.createElement("button");
 divButton2.textContent = ".";
 divButton2.style.gridArea = 4, 5, 2, 3;
 divButton2.style.margin = "5px"
+let comaCounterFirst = 0;
+let comaCounterSecond = 0;
 divButton2.addEventListener("click", function () {
     displayButton(divButton2);
     //si se pulsa antes de un simbolo de operacion
     if (!secondOperand) {
+        comaCounterFirst = comaCounterFirst + 1;
         pulsedNumbers = pulsedNumbers + divButton2.textContent;
     }
     else {
+        comaCounterSecond = comaCounterSecond + 1;
         pulsedNumbersSecond = pulsedNumbersSecond + divButton2.textContent;
     }
 })
@@ -98,10 +102,16 @@ divButton4.textContent = "=";
 divButton4.style.gridArea = 5, 6, 1, 4;
 divButton4.style.margin = "5px"
 divButton4.addEventListener("click", function () {
-    let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-    let result = operate(operation);
-    if(result){
-        displayResult(Math.round((result + Number.EPSILON) * 100) / 100);
+    if (comaCounterFirst > 1 || comaCounterSecond > 1) {
+        displayResult(moreThanOneDot);
+    }
+    else {
+        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
+        let result = operate(operation);
+
+        if (result) {
+            displayResult(Math.round((result + Number.EPSILON) * 100) / 100);
+        }
     }
     cleanParameters();
     postResult = true;
@@ -262,3 +272,4 @@ function div(operation) {
 
 //Strings de errores
 let div0 = "error division entre 0";
+let moreThanOneDot = "Mas de 1 . en operando"
