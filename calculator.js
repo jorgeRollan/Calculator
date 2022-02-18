@@ -101,7 +101,7 @@ divButton4.addEventListener("click", function () {
     let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
     let result = operate(operation);
     if(result){
-        displayResult(result);
+        displayResult(Math.round((result + Number.EPSILON) * 100) / 100);
     }
     cleanParameters();
     postResult = true;
