@@ -35,13 +35,22 @@ divButtons.appendChild(divButton2);
 
 
 const divButton3 = document.createElement("button");
-divButton3.textContent = "=";
+divButton3.textContent = "C";
 divButton3.style.gridArea = 4, 5, 3, 4;
 divButton3.style.margin = "5px"
 divButton3.addEventListener("click", function () {
-    displayButton(divButton3);
+    document.getElementById("textDisplay").textContent="0";
 })
 divButtons.appendChild(divButton3);
+
+const divButton4 = document.createElement("button");
+divButton4.textContent = "=";
+divButton4.style.gridArea = 5, 6, 1, 4;
+divButton4.style.margin = "5px"
+divButton.addEventListener("click", function () {
+})
+document.getElementById("divMain").appendChild(divButton4);
+
 
 
 function displayButton(buttonValue) {

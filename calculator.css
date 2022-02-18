@@ -12,10 +12,16 @@
 #divMain{
     display: flex;
     flex-direction: column;
+    background: gray;
+    width: 240px;
+    height: 370px;
 }
 #textDisplay{
-    background: grey;
+    background: blue;
     border: solid gray;
+    text-align: right;
+    color: white;
+    font-size: larger;
 }
 
 button{
