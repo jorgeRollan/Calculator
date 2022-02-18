@@ -7,6 +7,7 @@ const divButtons = document.getElementById("divNumbers");
 divButtons.style.display = "grid";
 let number = 0
 let secondOperand = false;
+let postResult=false;
 let pulsedNumbers = "";
 let pulsedNumbersSecond = "";
 let operator = "";
@@ -18,6 +19,10 @@ for (let a = 3; a > 0; a--) {
         divButton.style.gridArea = a, a + 1, b, b + 1;
         divButton.style.margin = "5px"
         divButton.addEventListener("click", function () {
+            if(postResult){
+                displayClean();
+                postResult=false;
+            }
             displayButton(divButton);
             //si se pulsa antes de un simbolo de operacion
             if (!secondOperand) {
@@ -61,7 +66,8 @@ divButton3.textContent = "C";
 divButton3.style.gridArea = 4, 5, 3, 4;
 divButton3.style.margin = "5px"
 divButton3.addEventListener("click", function () {
-    document.getElementById("textDisplay").textContent = "0";
+    displayClean();
+    cleanParameters();
 })
 divButtons.appendChild(divButton3);
 
@@ -72,8 +78,10 @@ divButton4.textContent = "=";
 divButton4.style.gridArea = 5, 6, 1, 4;
 divButton4.style.margin = "5px"
 divButton4.addEventListener("click", function () {
-    let operation= createOperation(pulsedNumbers,operator,pulsedNumbersSecond);
+    let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
     displayResult(operate(operation));
+    cleanParameters();
+    postResult=true;
 })
 document.getElementById("divMain").appendChild(divButton4);
 
@@ -82,7 +90,31 @@ document.getElementById("plusButton").addEventListener("click", function () {
     displayButton(document.getElementById("plusButton"));
     if (operator == "") {
         operator = "+";
-        secondOperand=true;
+        secondOperand = true;
+    }
+})
+
+document.getElementById("subButton").addEventListener("click", function () {
+    displayButton(document.getElementById("subButton"));
+    if (operator == "") {
+        operator = "-";
+        secondOperand = true;
+    }
+})
+
+document.getElementById("mulButton").addEventListener("click", function () {
+    displayButton(document.getElementById("mulButton"));
+    if (operator == "") {
+        operator = "*";
+        secondOperand = true;
+    }
+})
+
+document.getElementById("divButton").addEventListener("click", function () {
+    displayButton(document.getElementById("divButton"));
+    if (operator == "") {
+        operator = "/";
+        secondOperand = true;
     }
 })
 
@@ -100,26 +132,55 @@ function displayButton(buttonValue) {
         textDisplay.textContent = textDisplay.textContent + buttonValue.textContent;
     }
 }
+
+//funcion para mostrar unn string como resultado
 function displayResult(value) {
-        textDisplay.textContent = value;
+    const textDisplay = document.getElementById("textDisplay");
+    textDisplay.textContent = value;
 }
 
 
+//funcion para limpiar la pantalla
+function displayClean() {
+    const textDisplay = document.getElementById("textDisplay");
+    textDisplay.textContent = "0";
+}
+
+//limpieza de parametros de anterior consulta
+function cleanParameters() {
+    secondOperand = false;
+    pulsedNumbers = "";
+    pulsedNumbersSecond = "";
+    operator = "";
+}
+
 //objeto de la operacion
-function createOperation(op1,operator,op2){
+function createOperation(op1, operator, op2) {
     return {
-            firstOp: Number(op1),
-            operator:operator,
-            secondOp: Number(op2),
-        }
+        firstOp: Number(op1),
+        operator: operator,
+        secondOp: Number(op2),
+    }
 }
 
 function operate(operation) {
     switch (operation.operator) {
-        case ("+"):
+        case ("+"): {
             return plus(operation);
             break;
-
+        }
+        case ("-"): {
+            return sub(operation);
+            break;
+        }
+        case ("*"): {
+            return mul(operation);
+            break;
+        }
+        case ("/"): {
+            return div(operation);
+            break;
+        }
     }
 }
 
@@ -135,7 +196,7 @@ function sub(operation) {
 }
 
 //funcion multiplicacion
-function mulk(operation) {
+function mul(operation) {
     return operation.firstOp * operation.secondOp;
 }
 
