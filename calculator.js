@@ -6,12 +6,16 @@ manipulacion del DOM
 const divButtons = document.getElementById("divNumbers");
 divButtons.style.display = "grid";
 let number = 0
+let prevValueIsNumber = false;
 let secondOperand = false;
 let postResult = false;
 let multipleOp = false;
+
 let pulsedNumbers = "";
 let pulsedNumbersSecond = "";
 let operator = "";
+let operations = []
+let operation = {}
 for (let a = 3; a > 0; a--) {
     for (let b = 1; b < 4; b++) {
         number = number + 1;
@@ -27,12 +31,21 @@ for (let a = 3; a > 0; a--) {
             displayButton(divButton);
             //si se pulsa antes de un simbolo de operacion
             if (!secondOperand) {
-                pulsedNumbers = pulsedNumbers + divButton.textContent;
+                if (!operation.firstOp) {
+                    operation.firstOp = divButton.textContent;
+                }
+                else
+                    operation.firstOp = operation.firstOp + divButton.textContent;
             }
             else {
-                pulsedNumbersSecond = pulsedNumbersSecond + divButton.textContent;
+                if (!operation.secondOp) {
+                    operation.secondOp = divButton.textContent;
+                }
+                else {
+                    operation.secondOp = operation.secondOp + divButton.textContent;
+                }
             }
-
+            prevValueIsNumber = true;
         })
         divButtons.appendChild(divButton);
     }
@@ -51,10 +64,19 @@ divButton.addEventListener("click", function () {
     displayButton(divButton);
     //si se pulsa antes de un simbolo de operacion
     if (!secondOperand) {
-        pulsedNumbers = pulsedNumbers + divButton.textContent;
+        if (!operation.firstOp) {
+            operation.firstOp = divButton.textContent;
+        }
+        else
+            operation.firstOp = operation.firstOp + divButton.textContent;
     }
     else {
-        pulsedNumbersSecond = pulsedNumbersSecond + divButton.textContent;
+        if (!operation.secondOp) {
+            operation.secondOp = divButton.textContent;
+        }
+        else {
+            operation.secondOp = operation.secondOp + divButton.textContent;
+        }
     }
 
 })
@@ -68,15 +90,16 @@ divButton2.textContent = ".";
 divButton2.style.gridArea = 4, 5, 2, 3;
 divButton2.style.margin = "5px";
 function clickFun(event) {
-    displayButton(divButton2);
-    if (!secondOperand) {
-        pulsedNumbers = pulsedNumbers + divButton2.textContent;
-        enableDotButton(false);
+    if (operation.firstOp && !secondOperand) {
+        operation.firstOp = operation.firstOp + divButton2.textContent;
+        displayButton(divButton2);
     }
-    else {
-        pulsedNumbersSecond = pulsedNumbersSecond + divButton2.textContent;
-        enableDotButton(false);
+
+    if(operation.secondOp && secondOperand){
+        operation.secondOp = operation.secondOp + divButton2.textContent;
+        displayButton(divButton2);
     }
+    enableDotButton(true);
 }
 divButton2.addEventListener("click", clickFun, true);
 divButtons.appendChild(divButton2);
@@ -101,13 +124,13 @@ divButtons.appendChild(divButton3);
 const divButton4 = document.createElement("button");
 divButton4.textContent = "=";
 divButton4.style.gridArea = 5, 6, 1, 4;
-divButton4.style.margin = "5px"
+divButton4.style.margin = "5px";
+divButton4.style.background = "green";
 divButton4.addEventListener("click", function () {
-    let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-    let result = operate(operation);
-
-    if (result) {
-        displayResult(Math.round((result + Number.EPSILON) * 100) / 100);
+    operations.push(operation);
+    operate(operations[operations.length - 1]);
+    if (operations[operations.length - 1].result != null) {
+        displayResult(Math.round((operations[operations.length - 1].result + Number.EPSILON) * 100) / 100);
     }
 
     cleanParameters();
@@ -115,68 +138,144 @@ divButton4.addEventListener("click", function () {
 })
 document.getElementById("divMain").appendChild(divButton4);
 
-//listeners de botones del html
-document.getElementById("plusButton").addEventListener("click", function () {
-    displayButton(document.getElementById("plusButton"));
-    if (!secondOperand) {
-        operator = "+";
-        secondOperand = true;
+
+//boton de igual quee lo anado fuera del div grid para que ocupe todo el ancho
+const divButton5 = document.createElement("button");
+divButton5.textContent = "<-";
+divButton5.style.gridArea = 5, 6, 1, 4;
+divButton5.style.margin = "5px";
+divButton5.style.background = "red";
+divButton5.addEventListener("click", function () {
+    let actualOp = operation;
+    if (actualOp.secondOp && actualOp.secondOp != "") {
+        actualOp.secondOp = actualOp.secondOp.slice(0, -1);
+        const textDisplay = document.getElementById("textDisplay");
+        let a = textDisplay.textContent.slice(0, -1);
+        textDisplay.textContent = a;
+        if(actualOp.secondOp==""){
+            prevValueIsNumber=false;
+        }
+    }
+    else if (actualOp.operator &&actualOp.operator != "") {
+        actualOp.operator = "";
+        const textDisplay = document.getElementById("textDisplay");
+        let a = textDisplay.textContent.slice(0, -1);
+        textDisplay.textContent = a;
+        prevValueIsNumber = true;
     }
     else {
-        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-        cleanParameters();
-        pulsedNumbers = operate(operation);
-        operator = operator = "+";
-        secondOperand = true;
+        if (operations.length > 0) {
+            operation=operations.pop();
+            operation.secondOp = actualOp.secondOp.slice(0, -1);
+            operation.result=null;
+            const textDisplay = document.getElementById("textDisplay");
+            let a = textDisplay.textContent.slice(0, -1);
+            textDisplay.textContent = a;
+        }
+
+        else if (actualOp.firstOp != "") {
+            actualOp.firstOp = actualOp.firstOp.slice(0, -1);
+            const textDisplay = document.getElementById("textDisplay");
+            let a = textDisplay.textContent.slice(0, -1);
+            textDisplay.textContent = a;
+            secondOperand = false;
+            if (actualOp.firstOp == "") {
+                textDisplay.textContent = "0";
+                prevValueIsNumber=false;
+            }
+        }
     }
-    enableDotButton(true);
+})
+document.getElementById("divMain").appendChild(divButton5);
+
+//listeners de botones del html
+document.getElementById("plusButton").addEventListener("click", function () {
+    if (prevValueIsNumber) {
+        displayButton(document.getElementById("plusButton"));
+        if (!secondOperand) {
+            operation.operator = "+";
+            secondOperand = true;
+            prevValueIsNumber = false;
+        }
+        else {
+            prevValueIsNumber = false;;
+            operate(operation);
+            let a = Object.assign({}, operation);
+            operations.push(a);
+            let result = operation.result;
+            operation.secondOp = "";
+            operation.firstOp = result;
+            operation.operator = "+";
+            secondOperand = true;
+        }
+        enableDotButton(true);
+    }
 })
 
 document.getElementById("subButton").addEventListener("click", function () {
-    displayButton(document.getElementById("subButton"));
-    if (!secondOperand) {
-        operator = "-";
-        secondOperand = true;
+    if (prevValueIsNumber) {
+        displayButton(document.getElementById("subButton"));
+        if (!secondOperand) {
+            operation.operator = "-";
+            secondOperand = true;
+            prevValueIsNumber = false;
+        }
+        else {
+            prevValueIsNumber = false;;
+            operate(operation);
+            operations.push(operation);
+            let result = operation.result;
+            operation.secondOp = "";
+            operation.firstOp = result;
+            operation.operator = "-";
+            secondOperand = true;
+        }
+        enableDotButton(true);
     }
-    else {
-        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-        cleanParameters();
-        pulsedNumbers = operate(operation);
-        operator = operator = "-";
-        secondOperand = true;
-    }
-    enableDotButton(true);
 })
 
 document.getElementById("mulButton").addEventListener("click", function () {
-    displayButton(document.getElementById("mulButton"));
-    if (!secondOperand) {
-        operator = "*";
-        secondOperand = true;
+    if (prevValueIsNumber) {
+        displayButton(document.getElementById("mulButton"));
+        if (!secondOperand) {
+            operation.operator = "*";
+            secondOperand = true;
+            prevValueIsNumber = false;
+        }
+        else {
+            prevValueIsNumber = false;;
+            operate(operation);
+            operations.push(operation);
+            let result = operation.result;
+            operation.secondOp = "";
+            operation.firstOp = result;
+            operation.operator = "*";
+            secondOperand = true;
+        }
+        enableDotButton(true);
     }
-    else {
-        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-        cleanParameters();
-        pulsedNumbers = operate(operation);
-        operator = operator = "*";
-        secondOperand = true;
-    }
-    enableDotButton(true);
 })
 
 document.getElementById("divButton").addEventListener("click", function () {
-    displayButton(document.getElementById("divButton"));
     enableDotButton(true);
-    if (!secondOperand) {
-        operator = "/";
-        secondOperand = true;
-    }
-    else {
-        let operation = createOperation(pulsedNumbers, operator, pulsedNumbersSecond);
-        cleanParameters();
-        pulsedNumbers = operate(operation);
-        operator = operator = "/";
-        secondOperand = true;
+    if (prevValueIsNumber) {
+        displayButton(document.getElementById("divButton"));
+        if (!secondOperand) {
+            operation.operator = "/";
+            secondOperand = true;
+            prevValueIsNumber = false;
+        }
+        else {
+            prevValueIsNumber = false;;
+            operate(operation);
+            operations.push(operation);
+            let result = operation.result;
+            operation.secondOp = "";
+            operation.firstOp = result;
+            operation.operator = "/";
+            secondOperand = true;
+        }
+        enableDotButton(true);
     }
 })
 
@@ -210,10 +309,10 @@ function displayClean() {
 
 //limpieza de parametros de anterior consulta
 function cleanParameters() {
+    prevValueIsNumber = false;
     secondOperand = false;
-    pulsedNumbers = "";
-    pulsedNumbersSecond = "";
-    operator = "";
+    operations = [];
+    operation = {};
 }
 
 //objeto de la operacion
@@ -228,7 +327,6 @@ function createOperation(op1, operator, op2) {
 function enableDotButton(on) {
     if (on) {
         divButton2.addEventListener("click", clickFun, true)
-        divButtons.appendChild(divButton2);
     }
     else {
         divButton2.removeEventListener("click", clickFun, true)
@@ -259,26 +357,27 @@ function operate(operation) {
 
 //funcion suma
 function plus(operation) {
-    return operation.firstOp + operation.secondOp;
+    operation.result = Number(operation.firstOp) + Number(operation.secondOp);
 }
 
 //funcion resta
 function sub(operation) {
-    return operation.firstOp - operation.secondOp;
+    operation.result = Number(operation.firstOp) - Number(operation.secondOp);
 }
 
 //funcion multiplicacion
 function mul(operation) {
-    return operation.firstOp * operation.secondOp;
+    operation.result = Number(operation.firstOp) * Number(operation.secondOp);
 }
 
 //funcion division
 function div(operation) {
     if (operation.secondOp == 0) {
         displayResult(div0);
+        operation.result = null;
     }
     else
-        return operation.firstOp / operation.secondOp;
+        operation.result = Number(operation.firstOp) / Number(operation.secondOp);;
 }
 
 //Strings de errores

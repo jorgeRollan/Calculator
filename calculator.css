@@ -14,7 +14,7 @@
     flex-direction: column;
     background: gray;
     width: 240px;
-    height: 400px;
+    height: 440px;
     border-style: solid;
     padding: 5px;
 }
@@ -30,4 +30,22 @@
 button{
     margin: 5px;
     min-width: 50px;
-    min-height: 50px;}
+    min-height: 50px;
+}
+
+#plusButton{
+    background-color: coral;
+}
+
+#subButton{
+    background-color: darkkhaki;
+}
+
+#mulButton{
+    background-color: gold;
+}
+
+#divButton{
+    background-color: lightgreen;
+}
+
