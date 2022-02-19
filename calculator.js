@@ -21,8 +21,10 @@ for (let a = 3; a > 0; a--) {
         number = number + 1;
         const divButton = document.createElement("button");
         divButton.textContent = number;
+        divButton.id = number;
         divButton.style.gridArea = a, a + 1, b, b + 1;
         divButton.style.margin = "5px"
+
         divButton.addEventListener("click", function () {
             if (postResult) {
                 displayClean();
@@ -54,6 +56,7 @@ for (let a = 3; a > 0; a--) {
 //boton del 0 que no se puede en el bucle
 const divButton = document.createElement("button");
 divButton.textContent = 0;
+divButton.id = "0";
 divButton.style.gridArea = 4, 5, 1, 2;
 divButton.style.margin = "5px"
 divButton.addEventListener("click", function () {
@@ -87,6 +90,7 @@ divButtons.appendChild(divButton);
 //boton de la , ""
 const divButton2 = document.createElement("button");
 divButton2.textContent = ".";
+divButton2.id = ".";
 divButton2.style.gridArea = 4, 5, 2, 3;
 divButton2.style.margin = "5px";
 function clickFun(event) {
@@ -95,7 +99,7 @@ function clickFun(event) {
         displayButton(divButton2);
     }
 
-    if(operation.secondOp && secondOperand){
+    if (operation.secondOp && secondOperand) {
         operation.secondOp = operation.secondOp + divButton2.textContent;
         displayButton(divButton2);
     }
@@ -110,6 +114,7 @@ divButtons.appendChild(divButton2);
 //boton de clear ""
 const divButton3 = document.createElement("button");
 divButton3.textContent = "C";
+divButton3.id = "C";
 divButton3.style.gridArea = 4, 5, 3, 4;
 divButton3.style.margin = "5px"
 divButton3.addEventListener("click", function () {
@@ -123,6 +128,7 @@ divButtons.appendChild(divButton3);
 //boton de igual quee lo anado fuera del div grid para que ocupe todo el ancho
 const divButton4 = document.createElement("button");
 divButton4.textContent = "=";
+divButton4.id = "=";
 divButton4.style.gridArea = 5, 6, 1, 4;
 divButton4.style.margin = "5px";
 divButton4.style.background = "green";
@@ -142,6 +148,7 @@ document.getElementById("divMain").appendChild(divButton4);
 //boton de igual quee lo anado fuera del div grid para que ocupe todo el ancho
 const divButton5 = document.createElement("button");
 divButton5.textContent = "<-";
+divButton5.id = "<-";
 divButton5.style.gridArea = 5, 6, 1, 4;
 divButton5.style.margin = "5px";
 divButton5.style.background = "red";
@@ -152,11 +159,11 @@ divButton5.addEventListener("click", function () {
         const textDisplay = document.getElementById("textDisplay");
         let a = textDisplay.textContent.slice(0, -1);
         textDisplay.textContent = a;
-        if(actualOp.secondOp==""){
-            prevValueIsNumber=false;
+        if (actualOp.secondOp == "") {
+            prevValueIsNumber = false;
         }
     }
-    else if (actualOp.operator &&actualOp.operator != "") {
+    else if (actualOp.operator && actualOp.operator != "") {
         actualOp.operator = "";
         const textDisplay = document.getElementById("textDisplay");
         let a = textDisplay.textContent.slice(0, -1);
@@ -165,9 +172,9 @@ divButton5.addEventListener("click", function () {
     }
     else {
         if (operations.length > 0) {
-            operation=operations.pop();
+            operation = operations.pop();
             operation.secondOp = actualOp.secondOp.slice(0, -1);
-            operation.result=null;
+            operation.result = null;
             const textDisplay = document.getElementById("textDisplay");
             let a = textDisplay.textContent.slice(0, -1);
             textDisplay.textContent = a;
@@ -181,7 +188,7 @@ divButton5.addEventListener("click", function () {
             secondOperand = false;
             if (actualOp.firstOp == "") {
                 textDisplay.textContent = "0";
-                prevValueIsNumber=false;
+                prevValueIsNumber = false;
             }
         }
     }
@@ -333,52 +340,141 @@ function enableDotButton(on) {
     }
 }
 
-function operate(operation) {
-    switch (operation.operator) {
-        case ("+"): {
-            return plus(operation);
+
+/*
+
+    KEYBOARD SUPPORT
+    
+*/
+
+window.addEventListener("keydown", function (event) {
+    switch (event.key) {
+        case ('1'): {
+            this.document.getElementById("1").click();
             break;
         }
-        case ("-"): {
-            return sub(operation);
+        case ('2'): {
+            this.document.getElementById("2").click();
             break;
         }
-        case ("*"): {
-            return mul(operation);
+        case ('3'): {
+            this.document.getElementById("3").click();
             break;
         }
-        case ("/"): {
-            return div(operation);
+        case ('4'): {
+            this.document.getElementById("4").click();
+            break;
+        }
+        case ('5'): {
+            this.document.getElementById("5").click();
+            break;
+        }
+        case ('6'): {
+            this.document.getElementById("6").click();
+            break;
+        }
+        case ('7'): {
+            this.document.getElementById("7").click();
+            break;
+        }
+        case ('8'): {
+            this.document.getElementById("8").click();
+            break;
+        }
+        case ('9'): {
+            this.document.getElementById("9").click();
+            break;
+        }
+        case ('0'): {
+            this.document.getElementById("0").click();
+            break;
+        }
+        case ('+'): {
+            this.document.getElementById("plusButton").click();
+            break;
+        }
+        case ('-'): {
+            this.document.getElementById("subButton").click();
+            break;
+        }
+        case ('*'): {
+            this.document.getElementById("mulButton").click();
+            break;
+        }
+        case ('/'): {
+            this.document.getElementById("divButton").click();
+            break;
+        }
+        case ('='): {
+            this.document.getElementById("=").click();
+            break;
+        }
+        case ('.'): {
+            this.document.getElementById(".").click();
+            break;
+        }
+        case ('c'): {
+            this.document.getElementById("C").click();
+            break;
+        }
+        case('Backspace'):{
+            this.document.getElementById("<-").click();
             break;
         }
     }
-}
+})
+
+/*
+
+*/
+
+
+function operate(operation) {
+        switch (operation.operator) {
+            case ("+"): {
+                return plus(operation);
+                break;
+            }
+            case ("-"): {
+                return sub(operation);
+                break;
+            }
+            case ("*"): {
+                return mul(operation);
+                break;
+            }
+            case ("/"): {
+                return div(operation);
+                break;
+            }
+        }
+    }
 
 
 //funcion suma
 function plus(operation) {
-    operation.result = Number(operation.firstOp) + Number(operation.secondOp);
-}
+        operation.result = Number(operation.firstOp) + Number(operation.secondOp);
+    }
 
 //funcion resta
 function sub(operation) {
-    operation.result = Number(operation.firstOp) - Number(operation.secondOp);
-}
+        operation.result = Number(operation.firstOp) - Number(operation.secondOp);
+    }
 
 //funcion multiplicacion
 function mul(operation) {
-    operation.result = Number(operation.firstOp) * Number(operation.secondOp);
-}
+        operation.result = Number(operation.firstOp) * Number(operation.secondOp);
+    }
 
 //funcion division
 function div(operation) {
-    if (operation.secondOp == 0) {
-        displayResult(div0);
-        operation.result = null;
+        if (operation.secondOp == 0) {
+            displayResult(div0);
+            operation.result = null;
+        }
+        else
+            operation.result = Number(operation.firstOp) / Number(operation.secondOp);;
     }
-    else
-        operation.result = Number(operation.firstOp) / Number(operation.secondOp);;
-}
 
 //Strings de errores
 let div0 = "error division entre 0";
